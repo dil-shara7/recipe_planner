@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/recipe.dart';
 import 'login_screen.dart';
 import 'recipe_details_screen.dart';
+import 'add_recipe_screen.dart';
 
 class RecipeListScreen extends StatefulWidget {
   const RecipeListScreen({super.key});
@@ -101,6 +102,20 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
           'Recipes',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: kGreen,
+        foregroundColor: Colors.white,
+        onPressed: () async {
+          final newRecipe = await Navigator.push<Recipe>(
+            context,
+            MaterialPageRoute(builder: (_) => const AddRecipeScreen()),
+          );
+          if (newRecipe != null) {
+            setState(() => _recipes.add(newRecipe));
+          }
+        },
+        child: const Icon(Icons.add),
       ),
       body: Column(
         children: [
