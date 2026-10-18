@@ -82,3 +82,18 @@ final Map<String, Recipe> mealPlan = {};
 
 String planKey(DateTime d, String meal) =>
     '${d.year}-${d.month}-${d.day}|$meal';
+
+// Extra items the user adds by hand on the shopping list
+class ShoppingItem {
+  final String name;
+  final String quantity;
+  final String unit;
+  bool checked;
+
+  ShoppingItem(this.name, this.quantity, this.unit, {this.checked = false});
+}
+
+final List<ShoppingItem> extraItems = [];
+
+// Which meal-plan ingredients are ticked (key = name|unit)
+final Set<String> checkedItems = {};

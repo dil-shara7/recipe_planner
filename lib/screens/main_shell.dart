@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'recipe_list_screen.dart';
-import 'favorites_screen.dart';
 import 'meal_plan_screen.dart';
+import 'favorites_screen.dart';
+import 'shopping_list_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -23,7 +24,7 @@ class _MainShellState extends State<MainShell> {
       case 2:
         return const FavoritesScreen();
       default:
-        return const _ComingSoon(title: 'Shopping List');
+        return const ShoppingListScreen();
     }
   }
 
@@ -56,20 +57,6 @@ class _MainShellState extends State<MainShell> {
           ),
         ],
       ),
-    );
-  }
-}
-
-// Temporary placeholder until we build these screens
-class _ComingSoon extends StatelessWidget {
-  final String title;
-  const _ComingSoon({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(child: Text('$title coming next')),
     );
   }
 }
