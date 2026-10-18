@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
+import 'recipe_list_screen.dart';
 
 const kGreen = Color(0xFF0E7C4A);
 
@@ -12,6 +13,20 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _hidePassword = true;
+
+  void _openRegister() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const RegisterScreen()),
+    );
+  }
+
+  void _openRecipes() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const RecipeListScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,23 +61,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-Expanded(
-  child: OutlinedButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const RegisterScreen()),
-      );
-    },
-    child: const Text('Register'),
-  ),
-),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _openRegister,
+                      child: const Text('Register'),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
 
               // Email
               const TextField(
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.email_outlined),
                   hintText: 'Email',
@@ -98,7 +109,7 @@ Expanded(
                 height: 48,
                 child: FilledButton(
                   style: FilledButton.styleFrom(backgroundColor: kGreen),
-                  onPressed: () {},
+                  onPressed: _openRecipes,
                   child: const Text('Log In'),
                 ),
               ),
@@ -120,24 +131,24 @@ Expanded(
                 ),
               ),
               const SizedBox(height: 24),
-Row(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    const Text("Don't have an account? "),
-    GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const RegisterScreen()),
-        );
-      },
-      child: const Text(
-        'Register',
-        style: TextStyle(color: kGreen, fontWeight: FontWeight.bold),
-      ),
-    ),
-  ],
-),
+
+              // Bottom register link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Don't have an account? "),
+                  GestureDetector(
+                    onTap: _openRegister,
+                    child: const Text(
+                      'Register',
+                      style: TextStyle(
+                        color: kGreen,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
