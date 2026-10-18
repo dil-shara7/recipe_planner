@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
-import 'recipe_list_screen.dart';
+import 'main_shell.dart';
 
 const kGreen = Color(0xFF0E7C4A);
 
@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _openRecipes() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const RecipeListScreen()),
+      MaterialPageRoute(builder: (_) => const MainShell()),
     );
   }
 
