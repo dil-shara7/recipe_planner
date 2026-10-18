@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/recipe.dart';
 import 'login_screen.dart';
+import 'add_to_plan_dialog.dart';
 
 class RecipeDetailsScreen extends StatefulWidget {
   final Recipe recipe;
@@ -159,7 +160,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                         child: FilledButton(
                           style:
                               FilledButton.styleFrom(backgroundColor: kGreen),
-                          onPressed: () {},
+                          onPressed: () => showAddToPlanDialog(context, r),
                           child: const Text('Add to meal plan'),
                         ),
                       ),

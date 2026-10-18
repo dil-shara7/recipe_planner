@@ -76,3 +76,9 @@ final List<Recipe> allRecipes = [
     ],
   ),
 ];
+
+// Meal plan: key = date + meal type, value = the recipe
+final Map<String, Recipe> mealPlan = {};
+
+String planKey(DateTime d, String meal) =>
+    '${d.year}-${d.month}-${d.day}|$meal';

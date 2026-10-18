@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'recipe_list_screen.dart';
 import 'favorites_screen.dart';
+import 'meal_plan_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -18,7 +19,7 @@ class _MainShellState extends State<MainShell> {
       case 0:
         return const RecipeListScreen();
       case 1:
-        return const _ComingSoon(title: 'Meal Plan');
+        return const MealPlanScreen();
       case 2:
         return const FavoritesScreen();
       default:
