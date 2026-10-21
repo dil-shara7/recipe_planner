@@ -140,31 +140,15 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                   const SizedBox(height: 24),
 
                   // Buttons
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () =>
-                              setState(() => r.isFavorite = !r.isFavorite),
-                          icon: Icon(
-                            r.isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: Colors.red,
-                          ),
-                          label: const Text('Favorite'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: FilledButton(
-                          style:
-                              FilledButton.styleFrom(backgroundColor: kGreen),
-                          onPressed: () => showAddToPlanDialog(context, r),
-                          child: const Text('Add to meal plan'),
-                        ),
-                      ),
-                    ],
+                  // Add to meal plan
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(backgroundColor: kGreen),
+                      onPressed: () => showAddToPlanDialog(context, r),
+                      child: const Text('Add to meal plan'),
+                    ),
                   ),
                 ],
               ),

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 import 'login_screen.dart';
+import 'main_shell.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,38 +12,40 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  Timer? _timer;
-
   @override
   void initState() {
     super.initState();
-    // After 2 seconds, go to the login screen
-    _timer = Timer(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
-    });
+    _next();
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+  Future<void> _next() async {
+    await Future.delayed(const Duration(seconds: 2));
+    bool loggedIn = false;
+    try {
+      loggedIn = await AuthService.isLoggedIn();
+    } catch (_) {
+      loggedIn = false;
+    }
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => loggedIn ? const MainShell() : const LoginScreen(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.restaurant_menu, size: 100, color: kGreen),
-            const SizedBox(height: 12),
-            const Text(
+            Icon(Icons.restaurant_menu, size: 100, color: kGreen),
+            SizedBox(height: 12),
+            Text(
               'MealMate',
               style: TextStyle(
                 fontSize: 40,
@@ -49,13 +53,13 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: kGreen,
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
+            SizedBox(height: 8),
+            Text(
               'Better Meals. Happier You.',
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
-            const SizedBox(height: 40),
-            const SizedBox(
+            SizedBox(height: 40),
+            SizedBox(
               width: 28,
               height: 28,
               child: CircularProgressIndicator(strokeWidth: 3, color: kGreen),

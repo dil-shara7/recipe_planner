@@ -16,7 +16,7 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
   late DateTime _monday;
   late DateTime _selected;
 
-  final _meals = ['Breakfast', 'Lunch', 'Dinner'];
+  final _meals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
   final _dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   final _months = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',

@@ -6,7 +6,7 @@ import 'login_screen.dart';
 Future<void> showAddToPlanDialog(BuildContext context, Recipe recipe) async {
   DateTime date = DateTime.now();
   String meal = 'Lunch';
-  const meals = ['Breakfast', 'Lunch', 'Dinner'];
+  const meals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
 
   await showDialog(
     context: context,

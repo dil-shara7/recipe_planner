@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/app_data.dart';
 import '../models/recipe.dart';
 import '../widgets/recipe_image.dart';
+import '../services/auth_service.dart';
 import 'login_screen.dart';
 import 'recipe_details_screen.dart';
 import 'add_recipe_screen.dart';
@@ -32,6 +33,21 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
           'Recipes',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Log out',
+            onPressed: () async {
+              await AuthService.logout();
+              if (!context.mounted) return;
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+                (route) => false,
+              );
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: kGreen,

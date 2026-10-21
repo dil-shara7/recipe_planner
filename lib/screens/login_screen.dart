@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 import 'register_screen.dart';
 import 'main_shell.dart';
 
@@ -12,7 +13,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
   bool _hidePassword = true;
+  String? _error;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    super.dispose();
+  }
 
   void _openRegister() {
     Navigator.push(
@@ -21,7 +33,24 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _openRecipes() {
+  Future<void> _login() async {
+    if (_emailCtrl.text.trim().isEmpty || _passCtrl.text.isEmpty) {
+      setState(() => _error = 'Please enter your email and password');
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final error = await AuthService.login(_emailCtrl.text, _passCtrl.text);
+    if (!mounted) return;
+    if (error != null) {
+      setState(() {
+        _busy = false;
+        _error = error;
+      });
+      return;
+    }
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const MainShell()),
@@ -49,8 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 4),
               const Text('Better Meals. Happier You.'),
               const SizedBox(height: 32),
-
-              // Login / Register toggle
               Row(
                 children: [
                   Expanded(
@@ -70,20 +97,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               const SizedBox(height: 24),
-
-              // Email
-              const TextField(
+              TextField(
+                controller: _emailCtrl,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.email_outlined),
                   hintText: 'Email',
                   border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Password
               TextField(
+                controller: _passCtrl,
                 obscureText: _hidePassword,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.lock_outline),
@@ -93,46 +118,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     icon: Icon(
                       _hidePassword ? Icons.visibility_off : Icons.visibility,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _hidePassword = !_hidePassword;
-                      });
-                    },
+                    onPressed: () =>
+                        setState(() => _hidePassword = !_hidePassword),
                   ),
                 ),
               ),
+              if (_error != null) ...[
+                const SizedBox(height: 12),
+                Text(_error!, style: const TextStyle(color: Colors.red)),
+              ],
               const SizedBox(height: 24),
-
-              // Log In button
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: FilledButton(
                   style: FilledButton.styleFrom(backgroundColor: kGreen),
-                  onPressed: _openRecipes,
-                  child: const Text('Log In'),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {},
-                child: const Text('Forgot password?'),
-              ),
-              const Text('OR'),
-              const SizedBox(height: 12),
-
-              // Google button
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('Continue with Google'),
+                  onPressed: _busy ? null : _login,
+                  child: _busy
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text('Log In'),
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Bottom register link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -17,7 +17,7 @@ class ShoppingListScreen extends StatefulWidget {
 }
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
-  final _meals = ['Breakfast', 'Lunch', 'Dinner'];
+  final _meals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
   final _months = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
