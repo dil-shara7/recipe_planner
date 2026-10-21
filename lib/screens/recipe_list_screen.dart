@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/app_data.dart';
 import '../models/recipe.dart';
+import '../widgets/recipe_image.dart';
 import 'login_screen.dart';
 import 'recipe_details_screen.dart';
 import 'add_recipe_screen.dart';
@@ -14,13 +15,16 @@ class RecipeListScreen extends StatefulWidget {
 
 class _RecipeListScreenState extends State<RecipeListScreen> {
   String _selected = 'All';
+  String _query = '';
   final _categories = ['All', 'Breakfast', 'Lunch', 'Dinner', 'Snacks'];
 
   @override
   Widget build(BuildContext context) {
-    final shown = _selected == 'All'
-        ? allRecipes
-        : allRecipes.where((r) => r.category == _selected).toList();
+    final shown = allRecipes.where((r) {
+      final okCategory = _selected == 'All' || r.category == _selected;
+      final okSearch = r.title.toLowerCase().contains(_query.toLowerCase());
+      return okCategory && okSearch;
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -45,11 +49,11 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       ),
       body: Column(
         children: [
-          // Search box
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
-              decoration: InputDecoration(
+              onChanged: (v) => setState(() => _query = v),
+              decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Search recipes...',
                 border: OutlineInputBorder(),
@@ -57,8 +61,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             ),
           ),
           const SizedBox(height: 12),
-
-          // Category chips
           SizedBox(
             height: 40,
             child: ListView(
@@ -81,87 +83,88 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             ),
           ),
           const SizedBox(height: 12),
-
-          // Recipe grid
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(12),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: shown.length,
-              itemBuilder: (context, index) {
-                final r = shown[index];
-                return InkWell(
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => RecipeDetailsScreen(recipe: r),
-                      ),
-                    );
-                    setState(() {});
-                  },
-                  child: Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.network(r.imageUrl, fit: BoxFit.cover),
-                              Positioned(
-                                top: 4,
-                                right: 4,
-                                child: IconButton(
-                                  icon: Icon(
-                                    r.isFavorite
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: r.isFavorite
-                                        ? Colors.red
-                                        : Colors.white,
-                                  ),
-                                  onPressed: () => setState(
-                                    () => r.isFavorite = !r.isFavorite,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
+            child: shown.isEmpty
+                ? const Center(child: Text('No recipes found'))
+                : GridView.builder(
+                    padding: const EdgeInsets.all(12),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 0.8,
+                    ),
+                    itemCount: shown.length,
+                    itemBuilder: (context, index) {
+                      final r = shown[index];
+                      return InkWell(
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => RecipeDetailsScreen(recipe: r),
+                            ),
+                          );
+                          setState(() {});
+                        },
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                r.title,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    RecipeImage(path: r.imageUrl),
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: IconButton(
+                                        icon: Icon(
+                                          r.isFavorite
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          color: r.isFavorite
+                                              ? Colors.red
+                                              : Colors.white,
+                                        ),
+                                        onPressed: () => setState(
+                                          () => r.isFavorite = !r.isFavorite,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Text(
-                                '${r.minutes} mins · ${r.category}',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      r.title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${r.minutes} mins · ${r.category}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),

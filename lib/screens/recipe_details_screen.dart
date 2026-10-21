@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/recipe.dart';
 import 'login_screen.dart';
 import 'add_to_plan_dialog.dart';
+import '../widgets/recipe_image.dart';
 
 class RecipeDetailsScreen extends StatefulWidget {
   final Recipe recipe;
@@ -25,11 +26,10 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
             // Photo with back and favorite buttons
             Stack(
               children: [
-                Image.network(
-                  r.imageUrl,
+                RecipeImage(
+                  path: r.imageUrl,
                   height: 260,
                   width: double.infinity,
-                  fit: BoxFit.cover,
                 ),
                 SafeArea(
                   child: Padding(

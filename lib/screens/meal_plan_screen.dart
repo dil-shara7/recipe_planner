@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/app_data.dart';
 import '../models/recipe.dart';
+import '../widgets/recipe_image.dart';
 import 'login_screen.dart';
 import 'recipe_details_screen.dart';
 
@@ -53,12 +54,7 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
             ListTile(
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  r.imageUrl,
-                  width: 48,
-                  height: 48,
-                  fit: BoxFit.cover,
-                ),
+                child: RecipeImage(path: r.imageUrl, width: 48, height: 48),
               ),
               title: Text(r.title),
               subtitle: Text('${r.minutes} mins'),
@@ -177,11 +173,10 @@ class _MealPlanScreenState extends State<MealPlanScreen> {
                       : ListTile(
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              r.imageUrl,
+                            child: RecipeImage(
+                              path: r.imageUrl,
                               width: 56,
                               height: 56,
-                              fit: BoxFit.cover,
                             ),
                           ),
                           title: Text(

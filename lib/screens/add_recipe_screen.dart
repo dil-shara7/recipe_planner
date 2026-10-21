@@ -14,6 +14,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   final _titleCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
   final _timeCtrl = TextEditingController();
+  final _imageCtrl = TextEditingController();
 
   final _categories = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
   String _category = 'Dinner';
@@ -30,6 +31,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
     _titleCtrl.dispose();
     _descCtrl.dispose();
     _timeCtrl.dispose();
+    _imageCtrl.dispose();
     for (final c in [..._ingNames, ..._ingAmounts, ..._steps]) {
       c.dispose();
     }
@@ -56,7 +58,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       title: _titleCtrl.text.trim(),
       minutes: int.tryParse(_timeCtrl.text.trim()) ?? 0,
       category: _category,
-      imageUrl: 'https://picsum.photos/seed/${_titleCtrl.text.trim()}/400/300',
+      imageUrl: _imageCtrl.text.trim(),
       ingredients: ingredients,
       steps: steps,
     );
@@ -92,6 +94,16 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               decoration: const InputDecoration(
                 labelText: 'Description',
                 hintText: 'Short description about the recipe...',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            TextFormField(
+              controller: _imageCtrl,
+              decoration: const InputDecoration(
+                labelText: 'Photo link (optional)',
+                hintText: 'https://...jpg',
                 border: OutlineInputBorder(),
               ),
             ),

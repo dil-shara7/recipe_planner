@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/app_data.dart';
+import '../widgets/recipe_image.dart';
 import 'recipe_details_screen.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -41,11 +42,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     },
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        r.imageUrl,
+                      child: RecipeImage(
+                        path: r.imageUrl,
                         width: 60,
                         height: 60,
-                        fit: BoxFit.cover,
                       ),
                     ),
                     title: Text(
