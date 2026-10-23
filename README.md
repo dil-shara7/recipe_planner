@@ -6,13 +6,28 @@ MealMate is a mobile app built with **Flutter** that helps users browse recipes,
 
 ## Screenshots
 
-| Login | Recipes | Recipe details |
-|---|---|---|
-| ![Login](screenshots/login.png) | ![Recipes](screenshots/recipes.png) | ![Details](screenshots/details.png) |
-
-| Meal plan | Favorites | Shopping list |
-|---|---|---|
-| ![Meal plan](screenshots/meal_plan.png) | ![Favorites](screenshots/favorites.png) | ![Shopping](screenshots/shopping.png) |
+<table>
+  <tr>
+    <th align="center">Login</th>
+    <th align="center">Recipes</th>
+    <th align="center">Recipe details</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/login.png" width="250" alt="Login"></td>
+    <td align="center"><img src="screenshots/recipes.png" width="250" alt="Recipes"></td>
+    <td align="center"><img src="screenshots/details.png" width="250" alt="Recipe details"></td>
+  </tr>
+  <tr>
+    <th align="center">Meal plan</th>
+    <th align="center">Favorites</th>
+    <th align="center">Shopping list</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/meal_plan.png" width="250" alt="Meal plan"></td>
+    <td align="center"><img src="screenshots/favorites.png" width="250" alt="Favorites"></td>
+    <td align="center"><img src="screenshots/shopping.png" width="250" alt="Shopping list"></td>
+  </tr>
+</table>
 
 ## Features
 
