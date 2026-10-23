@@ -55,6 +55,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
         .toList();
 
     final recipe = Recipe(
+      isCustom: true,
       title: _titleCtrl.text.trim(),
       minutes: int.tryParse(_timeCtrl.text.trim()) ?? 0,
       category: _category,

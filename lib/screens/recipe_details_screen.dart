@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import '../data/app_data.dart';
 import '../models/recipe.dart';
-import 'login_screen.dart';
-import 'add_to_plan_dialog.dart';
 import '../widgets/recipe_image.dart';
+import 'add_to_plan_dialog.dart';
+import 'login_screen.dart';
 
 class RecipeDetailsScreen extends StatefulWidget {
   final Recipe recipe;
@@ -14,6 +15,32 @@ class RecipeDetailsScreen extends StatefulWidget {
 }
 
 class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
+  Future<void> _confirmDelete() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete recipe?'),
+        content: Text('Delete "${widget.recipe.title}"? This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+    if (ok == true) {
+      allRecipes.remove(widget.recipe);
+      mealPlan.removeWhere((key, value) => value == widget.recipe);
+      if (!mounted) return;
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final r = widget.recipe;
@@ -139,16 +166,39 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                       ),
                   const SizedBox(height: 24),
 
-                  // Buttons
-                  // Add to meal plan
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(backgroundColor: kGreen),
-                      onPressed: () => showAddToPlanDialog(context, r),
-                      child: const Text('Add to meal plan'),
-                    ),
+                  // Add to meal plan + delete (delete only for your own recipes)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 48,
+                          child: FilledButton(
+                            style:
+                                FilledButton.styleFrom(backgroundColor: kGreen),
+                            onPressed: () => showAddToPlanDialog(context, r),
+                            child: const Text('Add to meal plan'),
+                          ),
+                        ),
+                      ),
+                      if (r.isCustom) ...[
+                        const SizedBox(width: 12),
+                        SizedBox(
+                          height: 48,
+                          width: 48,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              side: const BorderSide(color: Colors.red),
+                            ),
+                            onPressed: _confirmDelete,
+                            child: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ],
               ),

@@ -18,6 +18,7 @@ class Recipe {
   final String imageUrl;
   final List<Ingredient> ingredients;
   final List<String> steps;
+  final bool isCustom; // true = added by the user, so it can be deleted
   bool isFavorite;
 
   Recipe({
@@ -28,6 +29,7 @@ class Recipe {
     required this.imageUrl,
     this.ingredients = const [],
     this.steps = const [],
+    this.isCustom = false,
     this.isFavorite = false,
   });
 
