@@ -33,6 +33,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void _goHome() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const MainShell()),
+    );
+  }
+
   Future<void> _login() async {
     if (_emailCtrl.text.trim().isEmpty || _passCtrl.text.isEmpty) {
       setState(() => _error = 'Please enter your email and password');
@@ -51,10 +58,24 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       return;
     }
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const MainShell()),
-    );
+    _goHome();
+  }
+
+  Future<void> _google() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final error = await AuthService.googleSignIn();
+    if (!mounted) return;
+    if (error != null) {
+      setState(() {
+        _busy = false;
+        _error = error;
+      });
+      return;
+    }
+    _goHome();
   }
 
   @override
@@ -144,6 +165,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         )
                       : const Text('Log In'),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text('OR'),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: OutlinedButton.icon(
+                  onPressed: _busy ? null : _google,
+                  icon: const Icon(Icons.g_mobiledata, size: 32),
+                  label: const Text('Continue with Google'),
                 ),
               ),
               const SizedBox(height: 24),
