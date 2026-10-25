@@ -6,10 +6,6 @@ MealMate is a mobile app built with **Flutter** that helps users browse recipes,
 
 ## Screenshots
 
-## Screenshots
-
-## Screenshots
-
 <table>
   <tr>
     <th align="center" width="33%">Login</th>
