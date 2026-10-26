@@ -3,6 +3,7 @@ import '../data/app_data.dart';
 import '../models/recipe.dart';
 import '../widgets/recipe_image.dart';
 import '../services/auth_service.dart';
+import '../services/storage_service.dart';
 import 'login_screen.dart';
 import 'recipe_details_screen.dart';
 import 'add_recipe_screen.dart';
@@ -38,6 +39,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             icon: const Icon(Icons.logout),
             tooltip: 'Log out',
             onPressed: () async {
+              await StorageService.save();
+              StorageService.reset();
               await AuthService.logout();
               if (!context.mounted) return;
               Navigator.pushAndRemoveUntil(
@@ -59,6 +62,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
           );
           if (newRecipe != null) {
             setState(() => allRecipes.add(newRecipe));
+            StorageService.save();
           }
         },
         child: const Icon(Icons.add),
@@ -122,7 +126,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                               builder: (_) => RecipeDetailsScreen(recipe: r),
                             ),
                           );
-                          setState(() {});
+                          StorageService.save();
+                          if (mounted) setState(() {});
                         },
                         child: Card(
                           clipBehavior: Clip.antiAlias,
@@ -146,9 +151,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                                               ? Colors.red
                                               : Colors.white,
                                         ),
-                                        onPressed: () => setState(
-                                          () => r.isFavorite = !r.isFavorite,
-                                        ),
+                                        onPressed: () {
+                                          setState(
+                                            () => r.isFavorite = !r.isFavorite,
+                                          );
+                                          StorageService.save();
+                                        },
                                       ),
                                     ),
                                   ],

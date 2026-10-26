@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/storage_service.dart';
 import 'login_screen.dart';
 import 'recipe_list_screen.dart';
 import 'meal_plan_screen.dart';
@@ -12,8 +13,37 @@ class MainShell extends StatefulWidget {
   State<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<MainShell> {
+class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   int _index = 0;
+  bool _ready = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _init();
+  }
+
+  Future<void> _init() async {
+    try {
+      await StorageService.load();
+    } catch (_) {}
+    if (mounted) setState(() => _ready = true);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // Save whenever the app leaves the screen
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) {
+      StorageService.save();
+    }
+  }
 
   Widget _currentPage() {
     switch (_index) {
@@ -30,6 +60,11 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_ready) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator(color: kGreen)),
+      );
+    }
     return Scaffold(
       body: _currentPage(),
       bottomNavigationBar: BottomNavigationBar(
@@ -37,7 +72,10 @@ class _MainShellState extends State<MainShell> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: kGreen,
         unselectedItemColor: Colors.grey,
-        onTap: (i) => setState(() => _index = i),
+        onTap: (i) {
+          StorageService.save();
+          setState(() => _index = i);
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book),

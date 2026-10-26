@@ -2,7 +2,7 @@
 
 **Better Meals. Happier You.**
 
-MealMate is a mobile app built with **Flutter** that helps users browse recipes, plan their meals for the week and build a shopping list automatically. The repository also contains a **Spring Boot + PostgreSQL** REST API for recipes.
+MealMate is a mobile app built with **Flutter** that helps users browse recipes, plan their meals for the week and build a shopping list automatically. The repository also contains a **Spring Boot + PostgreSQL** backend with **JWT** authentication and **Google sign-in**.
 
 ## Screenshots
 
@@ -31,16 +31,28 @@ MealMate is a mobile app built with **Flutter** that helps users browse recipes,
 
 ## Features
 
+**App**
 - Splash screen, register and login with password rules (at least 5 characters, a lowercase letter and a number)
-- Passwords are stored as SHA-256 hashes, and the session is remembered between launches
+- Google sign-in
 - 19 built-in recipes with photos (Breakfast, Lunch, Dinner, Snacks)
 - Search and category filter
 - Recipe details with ingredients and numbered steps
-- Add your own recipes (and delete them again)
+- Add your own recipes and delete them again
 - Favorites with a heart icon
 - Weekly meal planner with Breakfast, Lunch, Dinner and Snacks slots
 - Shopping list built from the week's meal plan, with matching ingredients added together, manual items and a progress bar
+- Favorites, meal plan, shopping items and your own recipes are saved on the phone for each account
 - Custom app icon and name
+
+**Backend**
+- REST API for recipes (create, read, update, delete)
+- User registration and login with BCrypt password hashing
+- JWT tokens issued by the server
+- Google sign-in: the server verifies Google's ID token, creates the user and issues its own JWT
+- PostgreSQL storage with Spring Data JPA
+
+**Offline behaviour**
+The app tries the backend first. If the server cannot be reached, login and registration fall back to an account stored on the phone (password kept as a SHA-256 hash), so the app also works when it is not connected to the backend.
 
 ## Tech stack
 
@@ -48,6 +60,7 @@ MealMate is a mobile app built with **Flutter** that helps users browse recipes,
 |---|---|
 | Mobile app | Flutter, Dart |
 | Local storage | shared_preferences, crypto |
+| Authentication | JWT (jjwt), BCrypt, Google Sign-In (OAuth 2.0) |
 | Backend | Java 21, Spring Boot, Spring Data JPA |
 | Database | PostgreSQL |
 | Tools | Git, GitHub, VS Code |
@@ -60,20 +73,60 @@ recipe_planner/
     data/        recipes, meal plan and shopping data
     models/      Recipe and Ingredient
     screens/     all app screens
-    services/    auth and API services
+    services/    auth, API and storage services
     widgets/     reusable widgets
   assets/
     images/      recipe photos
     icon/        app icon
-  recipe-backend/   Spring Boot REST API
+  recipe-backend/   Spring Boot API (recipes, users, JWT, Google)
   test/             unit test
 ```
+
+## API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/recipes` | List all recipes |
+| GET | `/recipes/{id}` | Get one recipe |
+| POST | `/recipes` | Add a recipe |
+| PUT | `/recipes/{id}` | Update a recipe |
+| DELETE | `/recipes/{id}` | Delete a recipe |
+| POST | `/auth/register` | Create an account, returns a JWT |
+| POST | `/auth/login` | Log in, returns a JWT |
+| POST | `/auth/google` | Verify a Google ID token, returns a JWT |
+| GET | `/auth/me` | Current user (needs `Authorization: Bearer <token>`) |
+
+## Run the backend
+
+1. Install JDK 21 and PostgreSQL, then create a database named `recipe_db`.
+2. In `recipe-backend`, create a file named `local.properties` (it is ignored by Git):
+
+```
+spring.datasource.password=your_database_password
+app.jwt.secret=a-long-random-text-of-at-least-32-characters
+app.google.client-id=your-web-client-id.apps.googleusercontent.com
+```
+
+3. Start the server:
+
+```
+cd recipe-backend
+./mvnw spring-boot:run
+```
+
+The API runs at `http://localhost:8080`.
 
 ## Run the Flutter app
 
 1. Install Flutter and the Android SDK.
-2. Connect an Android phone with USB debugging on (or start an emulator).
-3. In the project folder:
+2. Connect an Android phone with USB debugging on.
+3. Forward the port so the phone can reach the backend on your PC:
+
+```
+adb reverse tcp:8080 tcp:8080
+```
+
+4. In the project folder:
 
 ```
 flutter pub get
@@ -94,42 +147,14 @@ flutter build apk --release
 
 The file is created at `build/app/outputs/flutter-apk/app-release.apk`.
 
-## Run the backend
+### Google sign-in setup
 
-1. Install JDK 21 and PostgreSQL, then create a database named `recipe_db`.
-2. In `recipe-backend`, create a file named `local.properties` (it is ignored by Git) with your own database password:
-
-```
-spring.datasource.password=your_password
-```
-
-3. Start the server:
-
-```
-cd recipe-backend
-./mvnw spring-boot:run
-```
-
-The API runs at `http://localhost:8080`.
-
-| Method | Endpoint | Purpose |
-|---|---|---|
-| GET | `/recipes` | List all recipes |
-| GET | `/recipes/{id}` | Get one recipe |
-| POST | `/recipes` | Add a recipe |
-| PUT | `/recipes/{id}` | Update a recipe |
-| DELETE | `/recipes/{id}` | Delete a recipe |
+1. Create a project in Google Cloud and configure the OAuth consent screen.
+2. Create an **Android** OAuth client (package name and SHA-1 of your signing key) and a **Web application** client.
+3. Put the Web client ID in `lib/services/auth_service.dart` (`kGoogleWebClientId`) and in `recipe-backend/local.properties` (`app.google.client-id`).
 
 ## Tests
 
 ```
 flutter test
 ```
-
-## Current limitations and next steps
-
-- The app currently uses its built-in recipes. Recipes you add, favorites and the meal plan are kept in memory and reset when the app is fully closed.
-- Login is stored on the phone. The backend is ready to be extended with server-side users and JWT login.
-- Google sign-in is not implemented.
-
-Planned: save favorites and the meal plan on the device, connect the app to the Spring Boot API, JWT authentication, and Google sign-in.

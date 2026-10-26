@@ -39,6 +39,7 @@ class Recipe {
         minutes: json['minutes'] ?? 0,
         category: json['category'] ?? 'Dinner',
         imageUrl: json['imageUrl'] ?? '',
+        isCustom: json['isCustom'] ?? false,
         isFavorite: json['favorite'] ?? false,
         ingredients: ((json['ingredients'] ?? []) as List)
             .map((e) => Ingredient.fromJson(e))
@@ -51,6 +52,7 @@ class Recipe {
         'minutes': minutes,
         'category': category,
         'imageUrl': imageUrl,
+        'isCustom': isCustom,
         'favorite': isFavorite,
         'ingredients': ingredients.map((e) => e.toJson()).toList(),
         'steps': steps,
